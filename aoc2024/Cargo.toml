@@ -1,0 +1,16 @@
+[package]
+name = "aoc2024"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+reqwest = { version = "0.12.9", features = ["stream"] }
+thiserror = "2.0.9"
+tokio = { version = "1.42.0", features = ["rt", "rt-multi-thread", "macros"] }
+tokio-util = { version = "0.7.13", features = ["compat"] }
+futures = "0.3.31"
+bytes = "1.9.0"
+
+[lib]
+name = "aoc2024"
+doctest = true
