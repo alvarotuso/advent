@@ -1,9 +1,9 @@
-use std::env;
-use std::env::VarError;
 use async_stream::try_stream;
 use bytes::Bytes;
 use futures::{Stream, TryStreamExt};
 use reqwest;
+use std::env;
+use std::env::VarError;
 use thiserror::Error;
 
 const SESSION_COOKIE_ENV: &str = "AOC_SESSION_COOKIE";
@@ -25,13 +25,27 @@ impl AocClient {
         AocClient { client }
     }
 
-    async fn get_input_stream_bytes(&self, year: i16, question: i8) -> Result<impl Stream<Item=Result<Bytes, reqwest::Error>>, AocClientError> {
+    async fn get_input_stream_bytes(
+        &self,
+        year: i16,
+        question: i8,
+    ) -> Result<impl Stream<Item = Result<Bytes, reqwest::Error>>, AocClientError> {
         let url = format!("https://adventofcode.com/{}/day/{}/input", year, question);
         let session = env::var(SESSION_COOKIE_ENV)?;
-        Ok(self.client.get(url).header("Cookie", format!("session={}", session)).send().await?.bytes_stream())
+        Ok(self
+            .client
+            .get(url)
+            .header("Cookie", format!("session={}", session))
+            .send()
+            .await?
+            .bytes_stream())
     }
-    
-    pub async fn get_input_stream(&self, year: i16, question: i8) -> impl Stream<Item=Result<String, AocClientError>> + use<'_> {
+
+    pub async fn get_input_stream(
+        &self,
+        year: i16,
+        question: i8,
+    ) -> impl Stream<Item = Result<String, AocClientError>> + use<'_> {
         try_stream! {
             let mut s = self.get_input_stream_bytes(year, question).await?;
             let mut line = String::new();

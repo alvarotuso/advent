@@ -1,5 +1,5 @@
-use thiserror::Error;
 use crate::client::AocClientError;
+use thiserror::Error;
 
 #[derive(Debug, Error)]
 pub enum AocError {
