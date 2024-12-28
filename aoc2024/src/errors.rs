@@ -5,4 +5,6 @@ use thiserror::Error;
 pub enum AocError {
     #[error("client error: {0}")]
     ClientError(#[from] AocClientError),
+    #[error("error: {0}")]
+    Error(String),
 }
