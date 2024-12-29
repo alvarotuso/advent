@@ -75,6 +75,22 @@ fn eight_way_search_xmas(letter_grid: &Vec<Vec<char>>, i: usize, j: usize) -> us
     eight_way
 }
 
+fn mas_check(letter_grid: &Vec<Vec<char>>, i: usize, j: usize) -> bool {
+    if i == 0 || j == 0 || i == letter_grid.len() - 1 || j == letter_grid[0].len() - 1 {
+        return false;
+    }
+    let pairs = vec![
+        [letter_grid[i - 1][j - 1], letter_grid[i + 1][j + 1]],
+        [letter_grid[i - 1][j + 1], letter_grid[i + 1][j - 1]],
+    ];
+
+    pairs.iter().all(|p| match p {
+        ['M', 'S'] => true,
+        ['S', 'M'] => true,
+        _ => false,
+    })
+}
+
 #[tokio::main]
 async fn main() -> Result<(), AocError> {
     let aoc_client = AocClient::new(reqwest::Client::new());
@@ -89,6 +105,9 @@ async fn main() -> Result<(), AocError> {
         for j in 0..letter_grid[0].len() {
             if letter_grid[i][j] == SEARCH_WORD[0] {
                 total_part_1 += eight_way_search_xmas(&letter_grid, i, j);
+            }
+            if letter_grid[i][j] == 'A' && mas_check(&letter_grid, i, j) {
+                total_part_2 += 1;
             }
         }
     }
