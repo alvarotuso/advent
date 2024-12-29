@@ -7,10 +7,10 @@ edition = "2021"
 reqwest = { version = "0.12.9", features = ["stream"] }
 thiserror = "2.0.9"
 tokio = { version = "1.42.0", features = ["rt", "rt-multi-thread", "macros"] }
-tokio-util = { version = "0.7.13", features = ["compat"] }
 futures = "0.3.31"
 bytes = "1.9.0"
 async-stream = "0.3.6"
+regex = "1.11.1"
 
 [lib]
 name = "aoc2024"

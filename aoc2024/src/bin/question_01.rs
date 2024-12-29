@@ -2,6 +2,7 @@ use aoc2024::client::AocClient;
 use aoc2024::errors::AocError;
 use futures::TryStreamExt;
 use std::collections::{BinaryHeap, HashMap};
+use std::num::ParseIntError;
 
 #[tokio::main]
 async fn main() -> Result<(), AocError> {
@@ -12,10 +13,11 @@ async fn main() -> Result<(), AocError> {
     let mut l2_occurrences = HashMap::new();
     let mut l1_numbers = Vec::new();
     while let Some(line) = stream.try_next().await? {
-        let parts = line
+        let parts_result: Result<Vec<i32>, ParseIntError> = line
             .split_ascii_whitespace()
             .map(|part| part.parse::<i32>())
-            .collect::<Vec<_>>();
+            .collect();
+        let parts = parts_result?;
         if parts.len() != 2 {
             return Err(AocError::Error(format!(
                 "invalid number of parts: {} in line: {}",
@@ -23,22 +25,13 @@ async fn main() -> Result<(), AocError> {
                 line
             )));
         }
-        let parse_err = Err(AocError::Error(format!("failed to parse line: {}", line)));
-        if let Ok(l1) = parts[0] {
-            l1_numbers.push(l1);
-            heap_list_1.push(l1);
-        } else {
-            return parse_err;
-        }
-        if let Ok(l2) = parts[1] {
-            l2_occurrences
-                .entry(l2)
-                .and_modify(|c| *c += 1)
-                .or_insert(1);
-            heap_list_2.push(l2);
-        } else {
-            return parse_err;
-        }
+        l1_numbers.push(parts[0]);
+        l2_occurrences
+            .entry(parts[1])
+            .and_modify(|c| *c += 1)
+            .or_insert(1);
+        heap_list_1.push(parts[0]);
+        heap_list_2.push(parts[1]);
     }
     let mut total_part_1 = 0;
     while let Some(l1) = heap_list_1.pop() {
